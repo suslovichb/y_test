@@ -5,5 +5,6 @@
 ```sh
 pip install requirements.txt
 cd y_test
+python manage.py migrate
 python manage.py runserver
 ```
