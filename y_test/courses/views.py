@@ -12,33 +12,33 @@ class CoursesGeneralView(View):
             filter_params = json.loads(request.body)["filters"]
             queryset = queryset.filter(**filter_params)
         finally:
-            return JsonResponse({'endpoint': 'courses_get', 'data': list(queryset.values()), "status": "success"})
+            return JsonResponse({'message': 'courses loaded', 'data': list(queryset.values()), "status": "success"})
 
     def post(self, request):
         course_data = json.loads(request.body)
         try:
             new_course = Course(**course_data)
             new_course.save()
-            return JsonResponse({'endpoint': 'courses_post', 'status': 'success'})
+            return JsonResponse({'message': 'course added', 'status': 'success'})
         except:
-            return JsonResponse({'endpoint': 'courses_post', 'status': 'failure'})
+            return JsonResponse({'message': 'course addition failed', 'status': 'failure'})
 
 
 class CoursesInstanceView(View):
     def get(self, request, course_id):
         try:
             course_data = Course.objects.get(pk=course_id)
-            return JsonResponse({'endpoint': 'course_get', 'data': model_to_dict(course_data), 'status': 'success'})
+            return JsonResponse({'message': 'course info loaded', 'data': model_to_dict(course_data), 'status': 'success'})
         except:
-            return JsonResponse({'endpoint': 'course_get', 'status': 'failure', })
+            return JsonResponse({'message': 'course loading failed', 'status': 'failure', })
 
     def delete(self, request, course_id):
         try:
             course_to_delete = Course.objects.get(pk=course_id)
             course_to_delete.delete()
-            return JsonResponse({'endpoint': 'course_delete', 'status': 'success'})
+            return JsonResponse({'message': 'course deleted', 'status': 'success'})
         except:
-            return JsonResponse({'endpoint': 'course_delete', 'status': 'failure'})
+            return JsonResponse({'message': 'course deletion failed', 'status': 'failure'})
 
     def put(self, request, course_id):
         try:
@@ -47,6 +47,6 @@ class CoursesInstanceView(View):
             for attr, value in update_data.items():
                 setattr(course_to_update, attr, value)
             course_to_update.save()
-            return JsonResponse({'endpoint': 'course_put', 'status': 'success'})
+            return JsonResponse({'message': 'course info updated', 'status': 'success'})
         except:
-            return JsonResponse({'endpoint': 'course_put', 'status': 'failure'})
+            return JsonResponse({'message': 'course updating failed', 'status': 'failure'})
